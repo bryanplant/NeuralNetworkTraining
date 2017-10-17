@@ -16,18 +16,18 @@ public class Network {
 	 * @param numOutputs: number of output nodes
 	 * @param actFun: type of activation function for nodes
 	 */
-	public Network(int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFun, double learningRate) {
+	public Network(int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFunHidden, int actFunOutput, double learningRate) {
 		layers = new ArrayList<Layer>();
 		//create input layer with inputs number of nodes and a linear activation function
 		layers.add(new Layer(numInputs, 1));
 		
 		//create hidden layers with hidNode number of nodes and given activation function
 		for(int i = 0; i < numHidLayers; i++) {
-			layers.add(new Layer(numHidNodes, actFun));
+			layers.add(new Layer(numHidNodes, actFunHidden));
 		}
 		
-		//create output layer with outputs number of nodes, node type of 0, and linear activation function
-		layers.add(new Layer(numOutputs, 1));
+		//create output layer with outputs number of nodes and given activation function
+		layers.add(new Layer(numOutputs, actFunOutput));
 		
 		//add connections between layers
 		for(int i = 0; i < layers.size()-1; i++) {

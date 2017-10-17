@@ -98,7 +98,7 @@ public class Main {
 		}
 
 		//Create the Network
-		int hidLayer = 0, hidNode = 0, outputs = 0, actFun = 0;
+		int hidLayer = 0, hidNode = 0, outputs = 0, actFunHidden = 0, actFunOutput = 0;
 		double learningRate = 0;
 		valid = true;
 
@@ -146,13 +146,29 @@ public class Main {
 			}
 		} while (valid == false);
 
-		//let the user choose an activation function from a list (with error checking)
+		//let the user choose an activation function for the hidden layers from a list (with error checking)
 		do {
 			try {
 				System.out.println("Choose an activation function for the hidden layers:");
 				System.out.println("1. Linear");
 				System.out.println("2. Sigmoidal: Logistic");
-				actFun = in.nextInt();
+				actFunHidden = in.nextInt();
+				valid = true;
+			}
+			catch (Exception e) {
+				System.out.println("That is not an integer. Please enter an integer.\n");
+				valid = false;
+				in.nextLine();
+			}
+		} while (valid == false);
+		
+		//let the user choose an activation function for the output layer from a list (with error checking)
+		do {
+			try {
+				System.out.println("Choose an activation function for the output layer:");
+				System.out.println("1. Linear");
+				System.out.println("2. Sigmoidal: Logistic");
+				actFunOutput = in.nextInt();
 				valid = true;
 			}
 			catch (Exception e) {
@@ -182,14 +198,9 @@ public class Main {
 			}
 		} while (valid == false);
 		//finally, create a MLP with all the information needed initially
-		network = new Network(numInputs, hidLayer, hidNode, outputs, actFun, learningRate);
+		network = new Network(numInputs, hidLayer, hidNode, outputs, actFunHidden, actFunOutput, learningRate);
 
 		in.close();
-		
-		/*network.printNetwork();
-		double inputs[] = {1,2};
-		network.train(inputs, 0.0);
-		network.printNetwork();*/
 
 		//5x2 cross validation
 		double averageError = 0;	//error over all folds
@@ -203,9 +214,6 @@ public class Main {
 				double error = 0;
 				for(int k = j*(samples.size()/40); k < (j+1)*(samples.size()/40); k++) {
 					error += network.train(samples.get(k).getInputs(), samples.get(k).getOutput());
-					//network.printNetwork();
-					//System.out.println("Desired Output: " + samples.get(j).getOutput() + "\n");
-					//error = error/(samples.size()/200);
 				}
 				System.out.println("\tAverage Error: " + (error/(samples.size()/40)));
 			}
@@ -214,10 +222,10 @@ public class Main {
 			for(int j = samples.size()/2; j < samples.size(); j++){
 				error += network.evaluate(samples.get(j).getInputs(), samples.get(j).getOutput());
 
-				/*if(j > samples.size() - 5){	//print last 5 tests
-					network.printNetwork();
-					System.out.println("Desired Output: " + samples.get(j).getOutput() + "\n");
-				}*/
+			/*if(j > samples.size() - 2){	//print last 2 tests
+				network.printNetwork();
+				System.out.println("Desired Output: " + samples.get(j).getOutput() + "\n");
+			}*/
 			}
 			error = error/(samples.size()/2);
 			System.out.println("Average Error of Test " + (i+1) + ": " + (error) + "\n");
