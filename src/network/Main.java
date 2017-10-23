@@ -97,108 +97,12 @@ public class Main {
 			}
 		}
 
-		//Create the Network
-		int hidLayer = 0, hidNode = 0, outputs = 0, actFunHidden = 0, actFunOutput = 0;
-		double learningRate = 0;
-		valid = true;
-
-		//grab number of hidden layers (with error checking)
-		do {
-			try {
-				System.out.println("How many hidden layers will there be? Please enter 0, 1, or 2.");
-				hidLayer = in.nextInt();
-				valid = true;
-			}
-			catch (Exception e) {
-				System.out.println("That is not an integer. Please enter an integer.\n");
-				valid = false;
-				in.nextLine();
-			}
-		} while (valid == false);
-
-		//grab number of hidden nodes if there are hidden layers (with error checking)
-		if (hidLayer != 0) {
-			do {
-				try {
-					System.out.println("How many hidden nodes will there be?");
-					hidNode = in.nextInt();
-					valid = true;
-				}
-				catch (Exception e) {
-					System.out.println("That is not an integer. Please enter an integer.\n");
-					valid = false;
-					in.nextLine();
-				}
-			} while (valid == false);
-		}
-
-		//grab number of output nodes (with error checking)
-		do {
-			try {
-				System.out.println("How many output nodes will there be?");
-				outputs = in.nextInt();
-				valid = true;
-			}
-			catch (Exception e) {
-				System.out.println("That is not an integer. Please enter an integer.\n");
-				valid = false;
-				in.nextLine();
-			}
-		} while (valid == false);
-
-		//let the user choose an activation function for the hidden layers from a list (with error checking)
-		do {
-			try {
-				System.out.println("Choose an activation function for the hidden layers:");
-				System.out.println("1. Linear");
-				System.out.println("2. Sigmoidal: Logistic");
-				actFunHidden = in.nextInt();
-				valid = true;
-			}
-			catch (Exception e) {
-				System.out.println("That is not an integer. Please enter an integer.\n");
-				valid = false;
-				in.nextLine();
-			}
-		} while (valid == false);
-		
-		//let the user choose an activation function for the output layer from a list (with error checking)
-		do {
-			try {
-				System.out.println("Choose an activation function for the output layer:");
-				System.out.println("1. Linear");
-				System.out.println("2. Sigmoidal: Logistic");
-				actFunOutput = in.nextInt();
-				valid = true;
-			}
-			catch (Exception e) {
-				System.out.println("That is not an integer. Please enter an integer.\n");
-				valid = false;
-				in.nextLine();
-			}
-		} while (valid == false);
-
-		//let user choose learning rate
-		do {
-			try {
-				System.out.println("What do you want the learning rate to be? (0 - .05)");
-				learningRate = in.nextDouble();
-				if(learningRate > .05 || learningRate < 0)
-				{
-					valid = false;
-					System.out.println("That double is not between 0 and .05");
-				}
-				else
-					valid = true;
-			}
-			catch (Exception e) {
-				System.out.println("That is not an double. Please enter an integer.\n");
-				valid = false;
-				in.nextLine();
-			}
-		} while (valid == false);
-		//finally, create a MLP with all the information needed initially
-		network = new Network(numInputs, hidLayer, hidNode, outputs, actFunHidden, actFunOutput, learningRate);
+		int numHidLayers = 2;
+		int numHidNodes = 3;
+		int numOutputs = 1;
+		int hiddenActivation = 2; //sigmoidal
+		int outputActivation = 1; //linear
+		network = new Network(numInputs, numHidLayers, numHidNodes, numOutputs, hiddenActivation, outputActivation);
 
 		in.close();
 
@@ -218,19 +122,17 @@ public class Main {
 				System.out.println("\tAverage Error: " + (error/(samples.size()/40)));
 			}
 
+			//evaluate network
 			double error = 0;	//error for this fold
 			for(int j = samples.size()/2; j < samples.size(); j++){
 				error += network.evaluate(samples.get(j).getInputs(), samples.get(j).getOutput());
-
-			/*if(j > samples.size() - 2){	//print last 2 tests
-				network.printNetwork();
-				System.out.println("Desired Output: " + samples.get(j).getOutput() + "\n");
-			}*/
 			}
+			//average error of the test
 			error = error/(samples.size()/2);
 			System.out.println("Average Error of Test " + (i+1) + ": " + (error) + "\n");
 			averageError += error;
 		}
+		//average error of all tests
 		averageError = averageError / 5;
 		System.out.println("Average Error of 5 Tests: " + averageError);
 	}

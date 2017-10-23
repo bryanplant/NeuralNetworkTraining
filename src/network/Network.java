@@ -7,6 +7,9 @@ public class Network {
 	private Random random = new Random();
 	private ArrayList<Layer> layers;
 	private double learningRate;
+	private ArrayList<ArrayList<Double>> genes = new ArrayList<ArrayList<Double>>();
+	private double mutationRate;
+	private double crossoverRate;
 
 	/*
 	 * Create an MLP network
@@ -16,7 +19,7 @@ public class Network {
 	 * @param numOutputs: number of output nodes
 	 * @param actFun: type of activation function for nodes
 	 */
-	public Network(int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFunHidden, int actFunOutput, double learningRate) {
+	public Network(int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFunHidden, int actFunOutput) {
 		layers = new ArrayList<Layer>();
 		//create input layer with inputs number of nodes and a linear activation function
 		layers.add(new Layer(numInputs, 1));
@@ -39,7 +42,18 @@ public class Network {
 			}
 		}
 		
-		this.learningRate = learningRate;
+		//adds weight vector of each neuron in the network to the genes list
+		for(Layer layer : layers){
+			for(int i = 0; i < layer.size(); i++){
+				genes.add(layer.getNeuron(i).getWeights());
+			}
+		}
+		
+		printGenes();
+		
+		this.learningRate = 0.01;
+		this.mutationRate = 0.001;
+		this.crossoverRate = 0.95;
 	}
 
 	//Randomly reset weights in network
@@ -55,7 +69,7 @@ public class Network {
 	}
 
 	/*
-	 * Backpropogates through the network, updating all weights based on the output of the network
+	 * Backpropagates through the network, updating all weights based on the output of the network
 	 * @param output: the expected output of network and nodes
 	 */
 	public void backprop(double output){
@@ -138,6 +152,14 @@ public class Network {
 		for(Layer l : layers) {
 			l.printLayer(layers.indexOf(l)+1);
 		}
+	}
+	
+	public void printGenes(){
+		System.out.println("\nGenes:");
+		for(int i = 0; i < genes.size(); i++){
+			System.out.println(genes.get(i));
+		}
+		System.out.println();
 	}
 }
 
