@@ -96,6 +96,9 @@ public class Main {
 				System.out.println("File not found.");
 			}
 		}
+		
+		ArrayList<Network> population = new ArrayList<Network>(); //initial population
+		GeneticAlgorithm.createNextGeneration(population);		  //sample call for creating a new generation
 
 		int numHidLayers = 2;
 		int numHidNodes = 3;
