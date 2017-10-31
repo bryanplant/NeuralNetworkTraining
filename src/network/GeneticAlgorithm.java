@@ -9,7 +9,7 @@ public class GeneticAlgorithm {
 	public static ArrayList<Network> createNextGeneration(ArrayList<Network> networks) {
 		ArrayList<Network> newGeneration = select(networks);
 		newGeneration = crossover(newGeneration);
-		//newGeneration = mutate(newGeneration);
+		newGeneration = mutate(newGeneration);
 		return newGeneration;
 	}
 
@@ -43,6 +43,10 @@ public class GeneticAlgorithm {
 		    ArrayList<ArrayList<Double>> parentGenes2 = parent2.getGenes();
 		    ArrayList<ArrayList<Double>> offspringGenes1 = new ArrayList<>();
 		    ArrayList<ArrayList<Double>> offspringGenes2 = new ArrayList<>();
+		    for(int i = 0; i < parentGenes1.size(); i++){
+		    	offspringGenes1.add(new ArrayList<Double>());
+		    	offspringGenes2.add(new ArrayList<Double>());
+		    }
 		    for (int i = 0; i < parentGenes1.size(); i++) {
 		    	for(int j = 0; j < parentGenes1.get(i).size(); j++) {
 		    		if(rand.nextInt(2) == 0){
@@ -55,8 +59,14 @@ public class GeneticAlgorithm {
 		    		}
 		    	}
 		    }
-		    offspring.add(new Network(parentGenes1, parent1.getActFunHidden(), parent1.getActFunOutput()));
-		    offspring.add(new Network(parentGenes2, parent1.getActFunHidden(), parent1.getActFunOutput()));
+		    int numInputs = parent1.getNumInputs();
+		    int numHidLayers = parent1.getNumHidLayers();
+		    int numHidNodes = parent1.getNumHidNodes();
+		    int numOutputs = parent1.getNumOutputs();
+		    int actFunHidden = parent1.getActFunHidden();
+		    int actFunOutput = parent1.getActFunOutput();
+		    offspring.add(new Network(offspringGenes1, numInputs, numHidLayers, numHidNodes, numOutputs, actFunHidden, actFunOutput));
+		    offspring.add(new Network(offspringGenes2, numInputs, numHidLayers, numHidNodes, numOutputs, actFunHidden, actFunOutput));
 		    parents.remove(parent1);
 		    parents.remove(parent2);
 		}
@@ -66,7 +76,17 @@ public class GeneticAlgorithm {
 
 	private static ArrayList<Network> mutate(ArrayList<Network> networks) {
 		ArrayList<Network> mutated = new ArrayList<Network>();
-
-		return mutated;
+	    for(Network network : networks){
+	    	for(int i = 0; i < network.getGenes().size(); i++) {
+	    		for(int j = 0; j < network.getGenes().get(i).size(); j++){
+	    			if (rand.nextInt(100) == 0) {
+	    				double gene = network.getGenes().get(i).get(j);
+	    				network.setGene(i, j, gene + (rand.nextDouble()-.5)/2);
+	    			}
+	    		}
+	    	}
+	      mutated.add(network);
+	    }
+	    return mutated;
 	}
 }

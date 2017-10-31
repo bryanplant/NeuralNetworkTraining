@@ -1,6 +1,7 @@
 package network;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Network implements Comparable<Network>{
@@ -11,6 +12,10 @@ public class Network implements Comparable<Network>{
 	private double fitness;
 	private double mutationRate;
 	private double crossoverRate;
+	private int numInputs;
+	private int numHidLayers;
+	private int numHidNodes;
+	private int numOutputs;
 	private int actFunHidden;
 	private int actFunOutput;
 
@@ -38,8 +43,10 @@ public class Network implements Comparable<Network>{
 		//add connections between layers
 		for(int i = 0; i < layers.size()-1; i++) {
 			for(int j = 0; j < layers.get(i).size(); j++) {
-				double weight = (random.nextDouble()*2)-1;
-				layers.get(i).getNeuron(j).addWeight(weight);
+				for(int k = 0; k < layers.get(i+1).size(); k++){
+					double weight = (random.nextDouble()*2)-1;
+					layers.get(i).getNeuron(j).addWeight(weight);
+				}
 			}
 		}
 		
@@ -50,40 +57,54 @@ public class Network implements Comparable<Network>{
 			}
 		}
 		
-		//printGenes();
-		
 		this.learningRate = 0.01;
 		this.mutationRate = 0.001;
 		this.crossoverRate = 0.95;
+		this.numInputs = numInputs;
+		this.numHidLayers = numHidLayers;
+		this.numHidNodes = numHidNodes;
+		this.numOutputs = numOutputs;
 		this.actFunHidden = actFunHidden;
 		this.actFunOutput = actFunOutput;
 	}
 	
-	public Network(ArrayList<ArrayList<Double>> genes, int actFunHidden, int actFunOutput) {
+	public Network(ArrayList<ArrayList<Double>> genes, int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFunHidden, int actFunOutput) {
 		layers = new ArrayList<Layer>();
-		for(int i = 0; i < genes.size(); i++) {
-			for(int j = 0; j < genes.get(i).size(); j++) {
-				if(i == 0)
-					layers.add(new Layer(genes.get(i).size(),1));	//add input layer
-				else if(i == genes.size()-1)
-					layers.add(new Layer(genes.get(i).size(), actFunOutput));	//add output layer
-				else
-					layers.add(new Layer(genes.get(i).size(), actFunHidden)); //add hidden layer
-			}
+		//create input layer with inputs number of nodes and a linear activation function
+		layers.add(new Layer(numInputs, 1));
+		
+		//create hidden layers with hidNode number of nodes and given activation function
+		for(int i = 0; i < numHidLayers; i++) {
+			layers.add(new Layer(numHidNodes, actFunHidden));
 		}
 		
-		for(int i = 0; i < genes.size(); i++) {
-			for(int j = 0; j < genes.get(i).size(); j++) {
-				layers.get(i).getNeuron(j).addWeight(genes.get(i).get(j));
+		//create output layer with outputs number of nodes and given activation function
+		layers.add(new Layer(numOutputs, actFunOutput));
+		
+		int curGene = 0;
+		//add weights to neurons based on genes
+		for(Layer layer : layers){
+			for(int i = 0; i < layer.size(); i++){
+				layer.getNeuron(i).addWeights(genes.get(curGene));
+				curGene++;
 			}
 		}
 		
 		this.genes = genes;
-		printGenes();
+		
+		this.learningRate = 0.01;
+		this.mutationRate = 0.001;
+		this.crossoverRate = 0.95;
+		this.numInputs = numInputs;
+		this.numHidLayers = numHidLayers;
+		this.numHidNodes = numHidNodes;
+		this.numOutputs = numOutputs;
+		this.actFunHidden = actFunHidden;
+		this.actFunOutput = actFunOutput;
 	}
 
 	//Randomly reset weights in network
-	public void reset(){	
+	public void reset(){
 		for(int i = 0; i < layers.size()-1; i++) {
 			for(int j = 0; j < layers.get(i).size(); j++) {
 				for(int k = 0; k < layers.get(i+1).size(); k++) {
@@ -165,12 +186,16 @@ public class Network implements Comparable<Network>{
 		return error;	//return absolute error
 	}
 
-	public double evaluate(double inputs[], double output){		
-		calcOutputs(inputs);
+	public double evaluate(List<Sample> samples){	
+		double error = 0;
+		for(Sample sample : samples){
+			calcOutputs(sample.getInputs());
+			double actualOutput = layers.get(layers.size()-1).getNeuron(0).getOutput();
+			error += Math.abs(actualOutput - sample.getOutput());
+		}		
 		
-		double actualOutput = layers.get(layers.size()-1).getNeuron(0).getOutput();
-		double error = Math.abs(actualOutput - output);
-		return error;	//return absolute error
+		
+		return error/samples.size();	//return average error
 	}
 
 	//prints out information about network
@@ -200,6 +225,26 @@ public class Network implements Comparable<Network>{
 		return genes;
 	}
 	
+	public void setGene(int i, int j, double value){
+		genes.get(i).set(j, value);
+	}
+	
+	public int getNumInputs(){
+		return numInputs;
+	}
+	
+	public int getNumHidLayers(){
+		return numHidLayers;
+	}
+	
+	public int getNumHidNodes(){
+		return numHidNodes;
+	}
+	
+	public int getNumOutputs(){
+		return numOutputs;
+	}
+	
 	public int getActFunHidden() {
 		return actFunHidden;
 	}
@@ -211,8 +256,8 @@ public class Network implements Comparable<Network>{
 	@Override
 	public int compareTo(Network o) {
 		if(this.fitness < o.fitness)
-			return -1;
-		return 1;
+			return 1;
+		return -1;
 	}
 }
 
