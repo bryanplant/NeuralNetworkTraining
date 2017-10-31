@@ -3,13 +3,16 @@ package network;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Network {
+public class Network implements Comparable<Network>{
 	private Random random = new Random();
 	private ArrayList<Layer> layers;
 	private double learningRate;
 	private ArrayList<ArrayList<Double>> genes = new ArrayList<ArrayList<Double>>();
+	private double fitness;
 	private double mutationRate;
 	private double crossoverRate;
+	private int actFunHidden;
+	private int actFunOutput;
 
 	/*
 	 * Create an MLP network
@@ -35,10 +38,8 @@ public class Network {
 		//add connections between layers
 		for(int i = 0; i < layers.size()-1; i++) {
 			for(int j = 0; j < layers.get(i).size(); j++) {
-				for(int k = 0; k < layers.get(i+1).size(); k++) {
-					double weight = (random.nextDouble()*2)-1;
-					layers.get(i).getNeuron(j).addWeight(weight);
-				}
+				double weight = (random.nextDouble()*2)-1;
+				layers.get(i).getNeuron(j).addWeight(weight);
 			}
 		}
 		
@@ -49,11 +50,36 @@ public class Network {
 			}
 		}
 		
-		printGenes();
+		//printGenes();
 		
 		this.learningRate = 0.01;
 		this.mutationRate = 0.001;
 		this.crossoverRate = 0.95;
+		this.actFunHidden = actFunHidden;
+		this.actFunOutput = actFunOutput;
+	}
+	
+	public Network(ArrayList<ArrayList<Double>> genes, int actFunHidden, int actFunOutput) {
+		layers = new ArrayList<Layer>();
+		for(int i = 0; i < genes.size(); i++) {
+			for(int j = 0; j < genes.get(i).size(); j++) {
+				if(i == 0)
+					layers.add(new Layer(genes.get(i).size(),1));	//add input layer
+				else if(i == genes.size()-1)
+					layers.add(new Layer(genes.get(i).size(), actFunOutput));	//add output layer
+				else
+					layers.add(new Layer(genes.get(i).size(), actFunHidden)); //add hidden layer
+			}
+		}
+		
+		for(int i = 0; i < genes.size(); i++) {
+			for(int j = 0; j < genes.get(i).size(); j++) {
+				layers.get(i).getNeuron(j).addWeight(genes.get(i).get(j));
+			}
+		}
+		
+		this.genes = genes;
+		printGenes();
 	}
 
 	//Randomly reset weights in network
@@ -125,7 +151,7 @@ public class Network {
 	}
 
 	/*
-	 * Trains the neural network
+	 * Trains the neural network with backpropagation
 	 * @param inputs: an array which stores the input values of a Rosenbrock function
 	 * @param output: stores the output value from the Rosenbrock function with given x values
 	 */
@@ -160,6 +186,33 @@ public class Network {
 			System.out.println(genes.get(i));
 		}
 		System.out.println();
+	}
+	
+	public double getFitness() {
+		return fitness;
+	}
+	
+	public void setFitness(double value) {
+		fitness = value;
+	}
+	
+	public ArrayList<ArrayList<Double>> getGenes(){
+		return genes;
+	}
+	
+	public int getActFunHidden() {
+		return actFunHidden;
+	}
+	
+	public int getActFunOutput() {
+		return actFunOutput;
+	}
+
+	@Override
+	public int compareTo(Network o) {
+		if(this.fitness < o.fitness)
+			return -1;
+		return 1;
 	}
 }
 
