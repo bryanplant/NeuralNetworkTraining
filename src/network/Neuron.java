@@ -65,6 +65,10 @@ public class Neuron {
 	public void setWeightTo(int index, double weight) {
 		weights.set(index, weight);
 	}
+	
+	public void addWeights(ArrayList<Double> weights){
+		this.weights.addAll(weights);
+	}
 
 	//prints out info about neuron
 	public void printNeuron(int num){

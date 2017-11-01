@@ -49,6 +49,6 @@ public class RosenbrockGenerator {
 			output += (Math.pow((1 - inputs[i]), 2) + (100 * Math.pow(inputs[i+1] - Math.pow(inputs[i], 2), 2)));	//Rosenbrock function
 		}
 		return output;*/
-		return (Math.sin(inputs[0])+1)/2;
+		return (Math.sin(inputs[0]));
 	}
 }
