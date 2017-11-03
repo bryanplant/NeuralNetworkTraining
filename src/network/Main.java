@@ -14,7 +14,7 @@ public class Main {
 
 		numDataPoints = 0;
 		try {
-			Scanner s = new Scanner(new File("abalone.txt"));							//create a new scanner, checks lines of data in file
+			Scanner s = new Scanner(new File("data.txt"));							//create a new scanner, checks lines of data in file
 			while (s.hasNextLine()) {												//loop while there is another line
 				String line = s.nextLine();											//grab the next line
 				ArrayList<Double> inputs = new ArrayList<Double>();					//create an arraylist for the inputs
@@ -45,7 +45,7 @@ public class Main {
 		}
 
 		int numHidLayers = 2;
-		int numHidNodes = 10;
+		int numHidNodes = 20;
 		int numOutputs = 1;
 		int hiddenActivation = 2; //sigmoidal
 		int outputActivation = 1; //linear for function approximation
@@ -159,16 +159,16 @@ public class Main {
 		int genNum = 1;
 		for(int i = 0; i < 100; i++){
 			evaluatePopulation(population, samples.subList(0,  samples.size()/2), genNum);	//calculate the fitness of the population
-		
+			
 			Collections.sort(population);	//sort population by fitness
 			Collections.reverse(population);	//reverse order to go from best to worst
 			ArrayList<Network> bestPop = new ArrayList<Network>();
 			for(int j = 0; j < popSize; j++){
 				bestPop.add(population.get(j));	//select the best individuals
 			}
-			Collections.shuffle(bestPop);	//to make sure selection is random
+			
 			bestPop.addAll(EvolutionStrategies.createNextGeneration(bestPop));	//add offspring to population
-			population = bestPop;	//reset population
+			population = bestPop;	//set population to best individuals + offspring
 			
 			genNum++;
 		}

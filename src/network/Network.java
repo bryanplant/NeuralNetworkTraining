@@ -65,8 +65,6 @@ public class Network implements Comparable<Network>{
 				sigmas.get(i).add(random.nextDouble());
 			}
 		}
-		printGenes();
-		printSigmas();
 		
 		this.learningRate = 0.01;
 		this.mutationRate = 0.01;
