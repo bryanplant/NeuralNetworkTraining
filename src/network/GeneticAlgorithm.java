@@ -79,7 +79,7 @@ public class GeneticAlgorithm {
 	    for(Network network : networks){
 	    	for(int i = 0; i < network.getGenes().size(); i++) {
 	    		for(int j = 0; j < network.getGenes().get(i).size(); j++){
-	    			if (rand.nextInt(100) == 0) {
+	    			if (rand.nextDouble() <= network.getMutationRate()) {
 	    				double gene = network.getGenes().get(i).get(j);
 	    				network.setGene(i, j, gene + (rand.nextDouble()-.5)/2);
 	    			}

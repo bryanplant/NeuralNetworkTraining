@@ -67,7 +67,7 @@ public class Main {
 		else {
 			numDataPoints = 0;
 			try {
-				Scanner s = new Scanner(new File("data.txt"));							//create a new scanner, checks lines of data in file
+				Scanner s = new Scanner(new File("function-finding.txt"));							//create a new scanner, checks lines of data in file
 				while (s.hasNextLine()) {												//loop while there is another line
 					String line = s.nextLine();											//grab the next line
 					ArrayList<Double> inputs = new ArrayList<Double>();					//create an arraylist for the inputs

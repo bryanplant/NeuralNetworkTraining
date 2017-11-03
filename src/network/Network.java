@@ -58,7 +58,7 @@ public class Network implements Comparable<Network>{
 		}
 		
 		this.learningRate = 0.01;
-		this.mutationRate = 0.001;
+		this.mutationRate = 0.01;
 		this.crossoverRate = 0.95;
 		this.numInputs = numInputs;
 		this.numHidLayers = numHidLayers;
@@ -93,7 +93,7 @@ public class Network implements Comparable<Network>{
 		this.genes = genes;
 		
 		this.learningRate = 0.01;
-		this.mutationRate = 0.001;
+		this.mutationRate = 0.01;
 		this.crossoverRate = 0.95;
 		this.numInputs = numInputs;
 		this.numHidLayers = numHidLayers;
@@ -251,6 +251,10 @@ public class Network implements Comparable<Network>{
 	
 	public int getActFunOutput() {
 		return actFunOutput;
+	}
+	
+	public double getMutationRate(){
+		return mutationRate;
 	}
 
 	@Override
