@@ -132,4 +132,8 @@ public class Main {
 			population = GeneticAlgorithm.createNextGeneration(population);	//create a new population of offspring
 		}
 	}
+	
+	public static void trainWithES(ArrayList<Network> population, ArrayList<Sample> samples){
+		
+	}
 }

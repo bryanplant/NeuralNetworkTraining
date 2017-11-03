@@ -9,6 +9,7 @@ public class Network implements Comparable<Network>{
 	private ArrayList<Layer> layers;
 	private double learningRate;
 	private ArrayList<ArrayList<Double>> genes = new ArrayList<ArrayList<Double>>();
+	private ArrayList<ArrayList<Double>> sigmas = new ArrayList<>();
 	private double fitness;
 	private double mutationRate;
 	private double crossoverRate;
@@ -57,6 +58,13 @@ public class Network implements Comparable<Network>{
 			}
 		}
 		
+		//initialize sigmas to random nubmer between -1 and 1
+		for(int i = 0; i < layers.size(); i++){
+			for(int j = 0; j < layers.get(i).size(); j++){
+				sigmas.get(i).add((random.nextDouble()*2)-1);
+			}
+		}
+		
 		this.learningRate = 0.01;
 		this.mutationRate = 0.01;
 		this.crossoverRate = 0.95;
@@ -91,6 +99,42 @@ public class Network implements Comparable<Network>{
 		}
 		
 		this.genes = genes;
+		
+		this.learningRate = 0.01;
+		this.mutationRate = 0.01;
+		this.crossoverRate = 0.95;
+		this.numInputs = numInputs;
+		this.numHidLayers = numHidLayers;
+		this.numHidNodes = numHidNodes;
+		this.numOutputs = numOutputs;
+		this.actFunHidden = actFunHidden;
+		this.actFunOutput = actFunOutput;
+	}
+	
+	public Network(ArrayList<ArrayList<Double>> genes, ArrayList<ArrayList<Double>> sigmas, int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFunHidden, int actFunOutput) {
+		layers = new ArrayList<Layer>();
+		//create input layer with inputs number of nodes and a linear activation function
+		layers.add(new Layer(numInputs, 1));
+		
+		//create hidden layers with hidNode number of nodes and given activation function
+		for(int i = 0; i < numHidLayers; i++) {
+			layers.add(new Layer(numHidNodes, actFunHidden));
+		}
+		
+		//create output layer with outputs number of nodes and given activation function
+		layers.add(new Layer(numOutputs, actFunOutput));
+		
+		int curGene = 0;
+		//add weights to neurons based on genes
+		for(Layer layer : layers){
+			for(int i = 0; i < layer.size(); i++){
+				layer.getNeuron(i).addWeights(genes.get(curGene));
+				curGene++;
+			}
+		}
+		
+		this.genes = genes;
+		this.sigmas = sigmas;
 		
 		this.learningRate = 0.01;
 		this.mutationRate = 0.01;
