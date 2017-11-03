@@ -58,12 +58,15 @@ public class Network implements Comparable<Network>{
 			}
 		}
 		
-		//initialize sigmas to random nubmer between -1 and 1
-		for(int i = 0; i < layers.size(); i++){
-			for(int j = 0; j < layers.get(i).size(); j++){
-				sigmas.get(i).add((random.nextDouble()*2)-1);
+		//initialize sigmas to random nubmer between 0 and 1
+		for(int i = 0; i < genes.size(); i++){
+			sigmas.add(new ArrayList<Double>());
+			for(int j = 0; j < genes.get(i).size(); j++){
+				sigmas.get(i).add(random.nextDouble());
 			}
 		}
+		printGenes();
+		printSigmas();
 		
 		this.learningRate = 0.01;
 		this.mutationRate = 0.01;
@@ -257,6 +260,14 @@ public class Network implements Comparable<Network>{
 		System.out.println();
 	}
 	
+	public void printSigmas(){
+		System.out.println("\nSigmas:");
+		for(int i = 0; i < sigmas.size(); i++){
+			System.out.println(sigmas.get(i));
+		}
+		System.out.println();
+	}
+	
 	public double getFitness() {
 		return fitness;
 	}
@@ -269,8 +280,16 @@ public class Network implements Comparable<Network>{
 		return genes;
 	}
 	
+	public ArrayList<ArrayList<Double>> getSigmas(){
+		return sigmas;
+	}
+	
 	public void setGene(int i, int j, double value){
 		genes.get(i).set(j, value);
+	}
+	
+	public void setSigma(int i, int j, double value){
+		sigmas.get(i).set(j, value);
 	}
 	
 	public int getNumInputs(){
@@ -299,6 +318,10 @@ public class Network implements Comparable<Network>{
 	
 	public double getMutationRate(){
 		return mutationRate;
+	}
+	
+	public double getLearningRate(){
+		return learningRate;
 	}
 
 	@Override

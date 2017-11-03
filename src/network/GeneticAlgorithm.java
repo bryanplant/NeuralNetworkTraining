@@ -7,9 +7,10 @@ public class GeneticAlgorithm {
 	private static Random rand = new Random();
 
 	public static ArrayList<Network> createNextGeneration(ArrayList<Network> networks) {
-		ArrayList<Network> newGeneration = select(networks);	//select parents
+		ArrayList<Network> newGeneration = new ArrayList<Network>(networks);
+		newGeneration = select(networks);	//select parents
 		newGeneration = crossover(newGeneration);				//crossover parents
-		newGeneration = mutate(newGeneration);					//mutate offspring
+		mutate(newGeneration);					//mutate offspring
 		return newGeneration;									//return offspring
 	}
 
@@ -80,8 +81,7 @@ public class GeneticAlgorithm {
 		return offspring;
 	}
 
-	private static ArrayList<Network> mutate(ArrayList<Network> networks) {
-		ArrayList<Network> mutated = new ArrayList<Network>(); //list of mutated networks
+	private static void mutate(ArrayList<Network> networks) {
 	    for(Network network : networks){	//iterate through all networks
 	    	for(int i = 0; i < network.getGenes().size(); i++) {	//iterate through rows of genes
 	    		for(int j = 0; j < network.getGenes().get(i).size(); j++){	//iterate through columns of genes
@@ -91,8 +91,6 @@ public class GeneticAlgorithm {
 	    			}
 	    		}
 	    	}
-	      mutated.add(network);	//add mutated individual to list
 	    }
-	    return mutated;
 	}
 }

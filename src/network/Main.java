@@ -14,7 +14,7 @@ public class Main {
 
 		numDataPoints = 0;
 		try {
-			Scanner s = new Scanner(new File("function-finding.txt"));							//create a new scanner, checks lines of data in file
+			Scanner s = new Scanner(new File("abalone.txt"));							//create a new scanner, checks lines of data in file
 			while (s.hasNextLine()) {												//loop while there is another line
 				String line = s.nextLine();											//grab the next line
 				ArrayList<Double> inputs = new ArrayList<Double>();					//create an arraylist for the inputs
@@ -48,18 +48,36 @@ public class Main {
 		int numHidNodes = 10;
 		int numOutputs = 1;
 		int hiddenActivation = 2; //sigmoidal
-		int outputActivation = 1; //linear for function approximation	
-			
-		//create network and train with backprop
-		Network network = new Network(numInputs, numHidLayers, numHidNodes, numOutputs, hiddenActivation, outputActivation);
-		trainWithBackprop(network, samples);
+		int outputActivation = 1; //linear for function approximation
+		int popSize = 50;
 		
-		//create initial population of networks and train with genetic algorithm
-		int popSize = 50;	//size of population
-		ArrayList<Network> population = new ArrayList<Network>(); //initial population
-		for(int i = 0; i < popSize; i++)
-			population.add(new Network(numInputs, numHidLayers, numHidNodes, numOutputs, hiddenActivation, outputActivation));
-		trainWithGA(population, samples);
+		Scanner in = new Scanner(System.in);
+		System.out.println("What algorithm do you want to use?");
+		System.out.println("\t1)Backprop"); 
+		System.out.println("\t2)Genetic Algorithm");
+		System.out.println("\t3)Evolution Strategies");
+		int selection = in.nextInt();
+		
+		switch(selection){
+			case 1:
+				//create network and train with backprop
+				Network network = new Network(numInputs, numHidLayers, numHidNodes, numOutputs, hiddenActivation, outputActivation);
+				trainWithBackprop(network, samples);
+				break;
+			case 2:
+				//create initial population of networks and train with genetic algorithm
+				ArrayList<Network> population1 = new ArrayList<Network>(); //initial population
+				for(int i = 0; i < popSize; i++)
+					population1.add(new Network(numInputs, numHidLayers, numHidNodes, numOutputs, hiddenActivation, outputActivation));
+				trainWithGA(population1, samples);
+				break;
+			case 3:	
+				//create initial population of networks and train with evolution strategies
+				ArrayList<Network> population2 = new ArrayList<Network>(); //initial population
+				for(int i = 0; i < popSize; i++)
+					population2.add(new Network(numInputs, numHidLayers, numHidNodes, numOutputs, hiddenActivation, outputActivation));
+				trainWithES(population2, samples, popSize);
+		}
 
 	}
 	
@@ -107,25 +125,29 @@ public class Main {
 		System.out.println("Average Error of 10 Trials: " + averageError);
 	}
 	
+	public static void evaluatePopulation(ArrayList<Network> population, List<Sample> samples, int genNum){
+		double averageFitness = 0;
+		double bestFitness = Double.MAX_VALUE;
+		for(Network network : population) {	//iterate through population of networks
+			double fitness = network.evaluate(samples);
+			network.setFitness(fitness);	//set the fitness of each to the average error of the test set
+			averageFitness += fitness;		//add together each fitness of population
+			if(fitness < bestFitness)	//find best fit individual - lowest average error
+				bestFitness = fitness;
+		}
+		averageFitness /= population.size();	//calculate average fitness of population
+		System.out.println("Best Fitness of Generation    " + (genNum) + ": " + bestFitness);
+		System.out.println("Average Fitness of Generation " + (genNum) + ": " + averageFitness + "\n");
+		System.out.println();
+	}
+	
 	//train a population of networks with a genetic algorithm and evaluate
 	public static void trainWithGA(ArrayList<Network> population, ArrayList<Sample> samples) {
 		int genNum = 1;
 		for(int i = 0; i < 100; i++){	//a new generation is created every iteration
-			double averageFitness = 0;
-			double bestFitness = Double.MAX_VALUE;
-			for(Network network : population) {	//iterate through population of networks
-				double fitness = network.evaluate(samples.subList(0, samples.size()/2));
-				network.setFitness(fitness);	//set the fitness of each to the average error of the test set
-				averageFitness += fitness;		//add together each fitness of population
-				if(fitness < bestFitness)	//find best fit individual - lowest average error
-					bestFitness = fitness;
-			}
-			averageFitness /= population.size();	//calculate average fitness of population
-			System.out.println("Best Fitness of Generation    " + (genNum) + ": " + bestFitness);
-			System.out.println("Average Fitness of Generation " + (genNum) + ": " + averageFitness + "\n");
+			evaluatePopulation(population, samples.subList(0,  samples.size()/2), genNum);
 			genNum++;
-			System.out.println();
-			Collections.sort(population);	//sort networks by fitness because network implements comparable based on fitness value
+			Collections.sort(population);	//sort networks by fitness from highest average error to lowest -- worst to best
 			for(int j = 0; j < population.size(); j++)	//give worst network a fitness of 1, the next a fitness of 2, and so on
 				population.get(j).setFitness(j+1);		//the best individual ends up with the highest fitness
 			
@@ -133,7 +155,22 @@ public class Main {
 		}
 	}
 	
-	public static void trainWithES(ArrayList<Network> population, ArrayList<Sample> samples){
+	public static void trainWithES(ArrayList<Network> population, ArrayList<Sample> samples, int popSize){
+		int genNum = 1;
+		for(int i = 0; i < 100; i++){
+			evaluatePopulation(population, samples.subList(0,  samples.size()/2), genNum);	//calculate the fitness of the population
 		
+			Collections.sort(population);	//sort population by fitness
+			Collections.reverse(population);	//reverse order to go from best to worst
+			ArrayList<Network> bestPop = new ArrayList<Network>();
+			for(int j = 0; j < popSize; j++){
+				bestPop.add(population.get(j));	//select the best individuals
+			}
+			Collections.shuffle(bestPop);	//to make sure selection is random
+			bestPop.addAll(EvolutionStrategies.createNextGeneration(bestPop));	//add offspring to population
+			population = bestPop;	//reset population
+			
+			genNum++;
+		}
 	}
 }
