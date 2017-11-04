@@ -11,7 +11,7 @@ public class Main {
 		ArrayList<Sample> samples = new ArrayList<Sample>();			//create list of samples to use - data set essentially
 		int numInputs = 0;
 		int numDataPoints = 0;
-		String filename = "abalone.txt";
+		String filename = "data.txt";
 		try {
 			Scanner s = new Scanner(new File(filename));							//create a new scanner, checks lines of data in file
 			while (s.hasNextLine()) {												//loop while there is another line
@@ -57,7 +57,10 @@ public class Main {
 		System.out.println("\t1)Backprop"); 
 		System.out.println("\t2)Genetic Algorithm");
 		System.out.println("\t3)Evolution Strategies");
+		System.out.println("\t4)Differential Evolution");
+		
 		int selection = in.nextInt();
+		in.close();
 		
 		Network bestNetwork = null;
 		Collections.shuffle(samples);
@@ -81,6 +84,13 @@ public class Main {
 				for(int i = 0; i < popSize; i++)
 					population2.add(new Network(numInputs, numHidLayers, numHidNodes, numOutputs, hiddenActivation, outputActivation));
 				bestNetwork = trainWithES(population2, samples.subList(0, samples.size()/2), popSize); //train with first half of samples
+				break;
+			case 4:	
+				//create initial population of networks and train with evolution strategies
+				ArrayList<Network> population3 = new ArrayList<Network>(); //initial population
+				for(int i = 0; i < popSize; i++)
+					population3.add(new Network(numInputs, numHidLayers, numHidNodes, numOutputs, hiddenActivation, outputActivation));
+				bestNetwork = trainWithDE(population3, samples.subList(0, samples.size()/2)); //train with first half of samples
 				break;
 		}
 		
@@ -122,14 +132,16 @@ public class Main {
 		int numGenerations = 50;
 		while(true){	//a new generation is created every iteration
 			evaluatePopulation(population, samples, genNum);
-			genNum++;
 			Collections.sort(population);	//sort networks by fitness from highest average error to lowest -- worst to best
+			
 			if(genNum == numGenerations)
-				return population.get(population.size()-1);
+				return population.get(population.size()-1);	//return best individual
+			
 			for(int j = 0; j < population.size(); j++)	//give worst network a fitness of 1, the next a fitness of 2, and so on
 				population.get(j).setFitness(j+1);		//the best individual ends up with the highest fitness
 			
 			population = GeneticAlgorithm.createNextGeneration(population);	//create a new population of offspring
+			genNum++;
 		}
 	}
 	
@@ -141,16 +153,33 @@ public class Main {
 			
 			Collections.sort(population);	//sort population by fitness
 			Collections.reverse(population);	//reverse order to go from best to worst
+			
 			if(genNum == numGenerations)
-				return population.get(0);
+				return population.get(0);	//return best individual
+			
 			ArrayList<Network> bestPop = new ArrayList<Network>();
 			for(int j = 0; j < popSize; j++){
 				bestPop.add(population.get(j));	//select the best individuals
 			}
 			
 			bestPop.addAll(EvolutionStrategies.createNextGeneration(bestPop));	//add offspring to population
-			population = bestPop;	//set population to best individuals + offspring of best individuals
+			population = bestPop;	//set population to best individuals + offspring of best individuals			
+			genNum++;
+		}
+	}
+	
+	public static Network trainWithDE(ArrayList<Network> population, List<Sample> samples) {
+		int genNum = 1;
+		int numGenerations = 50;
+		while(true) {
+			evaluatePopulation(population, samples, genNum);	//calculate fitness of population
 			
+			if(genNum > numGenerations) {
+				Collections.sort(population);	//sort population by fitness
+				return population.get(population.size()-1);	//return best individual
+			}
+			
+			population = DifferentialEvolution.createNextGeneration(population, samples);	//create a new generation using DE
 			genNum++;
 		}
 	}
