@@ -63,7 +63,7 @@ public class EvolutionStrategies {
 	    	for(int i = 0; i < network.getSigmas().size(); i++) {	//iterate through rows of genes
 	    		for(int j = 0; j < network.getSigmas().get(i).size(); j++){	//iterate through columns of genes
     				double newSigma = network.getSigmas().get(i).get(j);	//get sigma that is to be changed
-    				double newGene = network.getSigmas().get(i).get(j);	//get gene that is to be changed
+    				double newGene = network.getGenes().get(i).get(j);	//get gene that is to be changed
     				newSigma += network.getLearningRate()*newSigma*rand.nextGaussian(); //use additive model to modify sigma
     				network.setSigma(i, j, newSigma); //set sigma value
     				
