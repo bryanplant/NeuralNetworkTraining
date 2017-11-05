@@ -1,15 +1,17 @@
 package network;
-
 import java.util.ArrayList;
+
+/*	Neuron class represents a single neuron within a neural network and its corresponding functions and 
+ * 	attributes. All that it has for Project 3 are weights, its output, and its activation function.
+ */
 
 public class Neuron {
 	private int actFun;
 	private ArrayList<Double> weights;
 	private double output;
 
-	/*
-	 * @param actFun: activation function to be used
-	 */
+	//create a new neuron with its activation function
+	//@param actFun: activation function to be used
 	public Neuron(int actFun) {
 		this.actFun = actFun;
 		weights = new ArrayList<Double>();
@@ -18,7 +20,7 @@ public class Neuron {
 	//the function to calculate the output of the activation function of the neuron
 	public void activate() {
 		switch (actFun) {
-		case 1:
+		case 1:						//represents a linear activation function
 			break;
 		case 2:						//sigmoidal - logistic
 			output = 1/(1+Math.exp(-output));
@@ -29,7 +31,7 @@ public class Neuron {
 	//returns derivative of activation function
 	public double derivActivate() {
 		switch (actFun) {
-		case 1:
+		case 1:						//derivative of linear is constant here
 			return 1;
 		case 2:						//sigmoidal - logistic
 			return output * (1-output);
@@ -43,17 +45,16 @@ public class Neuron {
 		weights.add(weight);
 	}
 
-	/*
-	 * calculates the output of the neuron
-	 * @param ins: inputs to the neuron
-	 * @param weights: corresponding weights of inputs
-	 */
+	
+	//calculates the output of the neuron
+	//@param ins: inputs to the neuron
+	//@param weights: corresponding weights of inputs
 	public void calculate(ArrayList<Double> ins, ArrayList<Double> weights){
 		output = 0;
 		for(int i = 0; i < ins.size(); i++){
-			output+=ins.get(i)*weights.get(i);
+			output+=ins.get(i)*weights.get(i);				//calculate output
 		}
-		activate(); //call activation function to adjust output
+		activate(); 										//call activation function to adjust output
 	}
 
 	//returns the weight of the connection this neuron has
@@ -66,6 +67,7 @@ public class Neuron {
 		weights.set(index, weight);
 	}
 	
+	//add weights to the list
 	public void addWeights(ArrayList<Double> weights){
 		this.weights.addAll(weights);
 	}

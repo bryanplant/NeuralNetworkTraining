@@ -1,11 +1,10 @@
 package network;
 
 /* Represents a single data sample - that is, a single output and the inputs
- * that produced it using the Rosenbrock function. The length of the array
- * corresponds to the dimension.
+ * that produced it using the corresponding dataset from UCI's repository. The 
+ * length of the array corresponds to the number of inputs.
  */
 public class Sample {
-	//input array
 	private double[] inputs;
 	private double output;
 

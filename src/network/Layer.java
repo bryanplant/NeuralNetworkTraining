@@ -1,9 +1,8 @@
 package network;
-
 import java.util.ArrayList;
 
 /* Represents a single layer in the network and it's functions. Contains
- * a list of neurons/nodes, the number of those,and the activation function 
+ * a list of neurons/nodes, the number of those, and the activation function 
  * for that layer, which is passed on to neurons for the layer.
  */
 public class Layer {

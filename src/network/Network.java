@@ -1,8 +1,11 @@
 package network;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+/*	The Network class represents a single network in a population and its related functions and attributes. This class
+ * 	is changed a bit from Project 2, as it had to incorporate new functionality for the 3 new training algorithms.
+ */
 
 public class Network implements Comparable<Network>{
 	private Random random = new Random();
@@ -66,6 +69,7 @@ public class Network implements Comparable<Network>{
 			}
 		}
 		
+		//this block represents our manually tunable parameters
 		this.learningRate = 0.01;
 		this.mutationRate = 0.01;
 		this.crossoverRate = 0.95;
@@ -77,6 +81,14 @@ public class Network implements Comparable<Network>{
 		this.actFunOutput = actFunOutput;
 	}
 	
+	//create a new network for genetic algorithm
+	//@param genes - a list of the network's genes
+	//@param numInputs - the number of inputs the network will have
+	//@param numHidLayers - the number of hidden layers the network will have
+	//@param numHidNodes - number of hidden nodes in each hidden layer
+	//@param numOutputs - number of outputs the network has
+	//@param actFunHidden - activation function for the hidden layers
+	//@param actFunOutput - activation function for the output layer
 	public Network(ArrayList<ArrayList<Double>> genes, int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFunHidden, int actFunOutput) {
 		layers = new ArrayList<Layer>();
 		//create input layer with inputs number of nodes and a linear activation function
@@ -100,7 +112,7 @@ public class Network implements Comparable<Network>{
 		}
 		
 		this.genes = genes;
-		
+		//this block represents our manually tunable parameters
 		this.learningRate = 0.01;
 		this.mutationRate = 0.01;
 		this.crossoverRate = 0.95;
@@ -112,6 +124,15 @@ public class Network implements Comparable<Network>{
 		this.actFunOutput = actFunOutput;
 	}
 	
+	//create a new network for evolution strategies
+	//@param genes - a list of the network's genes
+	//@param sigmas - a list of the network's sigma values
+	//@param numInputs - the number of inputs the network will have
+	//@param numHidLayers - the number of hidden layers the network will have
+	//@param numHidNodes - number of hidden nodes in each hidden layer
+	//@param numOutputs - number of outputs the network has
+	//@param actFunHidden - activation function for the hidden layers
+	//@param actFunOutput - activation function for the output layer
 	public Network(ArrayList<ArrayList<Double>> genes, ArrayList<ArrayList<Double>> sigmas, int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFunHidden, int actFunOutput) {
 		layers = new ArrayList<Layer>();
 		//create input layer with inputs number of nodes and a linear activation function
@@ -136,7 +157,7 @@ public class Network implements Comparable<Network>{
 		
 		this.genes = genes;
 		this.sigmas = sigmas;
-		
+		//this block is tunable parameters
 		this.learningRate = 0.01;
 		this.mutationRate = 0.01;
 		this.crossoverRate = 0.95;
@@ -196,6 +217,8 @@ public class Network implements Comparable<Network>{
 		}
 	}
 	
+	//calulates the output of a network
+	//@param inputs - the inputs for the network (from a sample)
 	public void calcOutputs(double[] inputs) {
 		//initialize input layer
 		for(int i = 0; i < layers.get(0).size(); i++){
@@ -205,8 +228,8 @@ public class Network implements Comparable<Network>{
 		//calculate output
 		for(int i = 1; i < layers.size(); i++) {
 			for(int j = 0; j < layers.get(i).size(); j++){
-				ArrayList<Double> ins = new ArrayList<Double>();	//inputs to the neuron
-				ArrayList<Double> weights = new ArrayList<Double>();//corresponding weights to the neuron
+				ArrayList<Double> ins = new ArrayList<Double>();				//inputs to the neuron
+				ArrayList<Double> weights = new ArrayList<Double>();			//corresponding weights to the neuron
 				for(int k = 0; k < layers.get(i-1).size(); k++) {
 					ins.add(layers.get(i-1).getNeuron(k).getOutput());
 					weights.add(layers.get(i-1).getNeuron(k).getWeightTo(j));
@@ -217,9 +240,9 @@ public class Network implements Comparable<Network>{
 	}
 
 	/*
-	 * Trains the neural network with backpropagation
-	 * @param inputs: an array which stores the input values of a Rosenbrock function
-	 * @param output: stores the output value from the Rosenbrock function with given x values
+	 * Trains the neural network with backpropagation - calls function for backprop for details
+	 * @param inputs: an array which stores the input values of a dataset
+	 * @param output: stores the output value from the dataset
 	 */
 	public double train(double inputs[], double output){
 		calcOutputs(inputs);
@@ -231,15 +254,15 @@ public class Network implements Comparable<Network>{
 		return error;	//return absolute error
 	}
 
+	//evaluates the newtwork's fitness by calculating the error
+	//@param samples - a list of samples, or the dataset
 	public double evaluate(List<Sample> samples){	
 		double error = 0;
 		for(Sample sample : samples){
 			calcOutputs(sample.getInputs());
 			double actualOutput = layers.get(layers.size()-1).getNeuron(0).getOutput();
 			error += Math.abs(actualOutput - sample.getOutput());
-		}		
-		
-		
+		}	
 		return error/samples.size();	//return average error
 	}
 
@@ -250,6 +273,7 @@ public class Network implements Comparable<Network>{
 		}
 	}
 	
+	//prints out information about the genes
 	public void printGenes(){
 		System.out.println("\nGenes:");
 		for(int i = 0; i < genes.size(); i++){
@@ -258,6 +282,7 @@ public class Network implements Comparable<Network>{
 		System.out.println();
 	}
 	
+	//prints out sigma information
 	public void printSigmas(){
 		System.out.println("\nSigmas:");
 		for(int i = 0; i < sigmas.size(); i++){
@@ -266,62 +291,77 @@ public class Network implements Comparable<Network>{
 		System.out.println();
 	}
 	
+	//returns the network's fitness rating
 	public double getFitness() {
 		return fitness;
 	}
 	
+	//sets the network's fitness rating
 	public void setFitness(double value) {
 		fitness = value;
 	}
 	
+	//returns the list of the network's genes
 	public ArrayList<ArrayList<Double>> getGenes(){
 		return genes;
 	}
 	
+	//returns the list of the network's sigma values
 	public ArrayList<ArrayList<Double>> getSigmas(){
 		return sigmas;
 	}
 	
+	//sets a network's individual gene
 	public void setGene(int i, int j, double value){
 		genes.get(i).set(j, value);
 	}
 	
+	//sets a network's individual sigma value
 	public void setSigma(int i, int j, double value){
 		sigmas.get(i).set(j, value);
 	}
 	
+	//returns the number of network inputs
 	public int getNumInputs(){
 		return numInputs;
 	}
 	
+	//returns the number of hidden layers
 	public int getNumHidLayers(){
 		return numHidLayers;
 	}
 	
+	//returns the number of hidden nodes
 	public int getNumHidNodes(){
 		return numHidNodes;
 	}
 	
+	//returns the number of outputs of the network
 	public int getNumOutputs(){
 		return numOutputs;
 	}
 	
+	//returns the network's activation function for the hidden layers
 	public int getActFunHidden() {
 		return actFunHidden;
 	}
 	
+	//returns the activation function for the output layer
 	public int getActFunOutput() {
 		return actFunOutput;
 	}
 	
+	//returns the mutation rate of the network
 	public double getMutationRate(){
 		return mutationRate;
 	}
 	
+	//returns the learning rate for assessment of convergence rate
 	public double getLearningRate(){
 		return learningRate;
 	}
 
+	//compares the fitness of two networks
 	@Override
 	public int compareTo(Network o) {
 		if(this.fitness < o.fitness)
