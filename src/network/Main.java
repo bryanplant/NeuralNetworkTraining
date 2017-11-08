@@ -15,7 +15,7 @@ public class Main {
 		ArrayList<Sample> samples = new ArrayList<Sample>();						//create list of samples to use - dataset essentially
 		int numInputs = 0;
 		int numDataPoints = 0;
-		String filename = "data.txt";
+		String filename = "energy.txt";
 		try {
 			Scanner s = new Scanner(new File(filename));							//create a new scanner, checks lines of data in file
 			while (s.hasNextLine()) {												//loop while there is another line
@@ -108,7 +108,8 @@ public class Main {
 			for(int k = j*(samples.size()/20); k < (j+1)*(samples.size()/20); k++) {
 				error += network.train(samples.get(k).getInputs(), samples.get(k).getOutput());			//training happens here and returns an error value	
 			}
-			System.out.println("\tAverage Error: " + (error/(samples.size()/20)));
+			//System.out.println("\tAverage Error: " + (error/(samples.size()/20)));
+			System.out.println((error/(samples.size()/20)));
 		}
 		return network;
 	}
@@ -127,8 +128,9 @@ public class Main {
 				bestFitness = fitness;
 		}
 		averageFitness /= population.size();																//calculate average fitness of population
-		System.out.println("Best Fitness of Generation    " + (genNum) + ": " + bestFitness);
-		System.out.println("Average Fitness of Generation " + (genNum) + ": " + averageFitness + "\n");		//print results of fitness determination
+		//System.out.println("Best Fitness of Generation    " + (genNum) + ": " + bestFitness);
+		//System.out.println("Average Fitness of Generation " + (genNum) + ": " + averageFitness + "\n");		//print results of fitness determination
+		System.out.println(bestFitness);
 	}
 
 	//train a population of networks with a genetic algorithm and evaluate
@@ -136,7 +138,7 @@ public class Main {
 	//@param samples - list of samples that function as the dataset
 	public static Network trainWithGA(ArrayList<Network> population, List<Sample> samples) {
 		int genNum = 1;																						//initialize the generation to 1
-		int numGenerations = 50;																			//iterate through 50 generations
+		int numGenerations = 500;																			//iterate through 50 generations
 		while(true){																						//a new generation is created every iteration
 			evaluatePopulation(population, samples, genNum);												//assess the fitness of the current generation
 			Collections.sort(population);																	//sort networks by fitness from highest average error to lowest -- worst to best
@@ -155,7 +157,7 @@ public class Main {
 	//@param popSize - indicates the size of the population
 	public static Network trainWithES(ArrayList<Network> population, List<Sample> samples, int popSize){
 		int genNum = 1;																						//initialize generation number and set end number again
-		int numGenerations = 50;
+		int numGenerations = 500;
 		while(true){																						//loop forever (or until return condition in this case)
 			evaluatePopulation(population, samples, genNum);												//calculate the fitness of the population
 			Collections.sort(population);																	//sort population by fitness
@@ -177,7 +179,7 @@ public class Main {
 	//@param samples - list of samples that serves as the dataset
 	public static Network trainWithDE(ArrayList<Network> population, List<Sample> samples) {
 		int genNum = 1;																						//initialize generation number, iterate to 50 as before
-		int numGenerations = 50;
+		int numGenerations = 500;
 		while(true) {																						//continue to loop until return condition
 			evaluatePopulation(population, samples, genNum);												//calculate fitness of population
 			if(genNum > numGenerations) {																	//iterate until one more than the stopping condition
