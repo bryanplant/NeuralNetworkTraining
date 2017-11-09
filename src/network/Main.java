@@ -15,7 +15,7 @@ public class Main {
 		ArrayList<Sample> samples = new ArrayList<Sample>();						//create list of samples to use - dataset essentially
 		int numInputs = 0;
 		int numDataPoints = 0;
-		String filename = "energy.txt";
+		String filename = "tic-tac-toe.txt";
 		try {
 			Scanner s = new Scanner(new File(filename));							//create a new scanner, checks lines of data in file
 			while (s.hasNextLine()) {												//loop while there is another line
