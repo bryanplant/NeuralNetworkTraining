@@ -58,10 +58,11 @@ public class Main {
 
 		Scanner in = new Scanner(System.in);											//grab user input for the algorithm to use
 		System.out.println("What algorithm do you want to use?");
-		System.out.println("\t1)Backprop"); 
-		System.out.println("\t2)Genetic Algorithm");
-		System.out.println("\t3)Evolution Strategies");
-		System.out.println("\t4)Differential Evolution");
+		System.out.println("\t1)K-Means Clustering"); 
+		System.out.println("\t2)DB-Scan");
+		System.out.println("\t3)Competitive Learning Network");
+		System.out.println("\t4)Particle Swarm Optimization (PSO)");
+		System.out.println("\t5)Ant Colony Optimization (ACO)");
 
 		int selection = in.nextInt();
 		in.close();
@@ -70,30 +71,45 @@ public class Main {
 		Collections.shuffle(samples);													//randomize the data
 
 		switch(selection){
-		case 1:																														//create network and train with backprop
+		case 1:	
+			//run K-means
+			/*
 			Network network = new Network(numInputs, numHidLayers, numHidNodes, numOutputs, hiddenActivation, outputActivation);
-			bestNetwork = trainWithBackprop(network, samples.subList(0, samples.size()/2));											//train with first half of samples
+			bestNetwork = trainWithBackprop(network, samples.subList(0, samples.size()/2));	
+			*/
 			break;
-		case 2:																														//create initial population of networks and train with genetic algorithm
+		case 2:	
+			//run DB-scan
+			/*
 			ArrayList<Network> population1 = new ArrayList<Network>(); 																//initial population
 			for(int i = 0; i < popSize; i++) {
 				population1.add(new Network(numInputs, numHidLayers, numHidNodes, numOutputs, hiddenActivation, outputActivation));
 			}
-			bestNetwork = trainWithGA(population1, samples.subList(0, samples.size()/2)); 											//train with first half of samples
+			bestNetwork = trainWithGA(population1, samples.subList(0, samples.size()/2));
+			*/
 			break;
-		case 3:																														//create initial population of networks and train with evolution strategies
+		case 3:
+			//run competitive learning network
+			/*
 			ArrayList<Network> population2 = new ArrayList<Network>(); 																//initial population
 			for(int i = 0; i < popSize; i++) {
 				population2.add(new Network(numInputs, numHidLayers, numHidNodes, numOutputs, hiddenActivation, outputActivation));
 			}
-			bestNetwork = trainWithES(population2, samples.subList(0, samples.size()/2), popSize); 									//train with first half of samples
+			bestNetwork = trainWithES(population2, samples.subList(0, samples.size()/2), popSize);
+			*/
 			break;
-		case 4:																														//create initial population of networks and train with differential evolution
+		case 4:		
+			//run PSO
+			/*
 			ArrayList<Network> population3 = new ArrayList<Network>(); 																//initial population
 			for(int i = 0; i < popSize; i++) {
 				population3.add(new Network(numInputs, numHidLayers, numHidNodes, numOutputs, hiddenActivation, outputActivation));
 			}
-			bestNetwork = trainWithDE(population3, samples.subList(0, samples.size()/2)); 											//train with first half of samples
+			bestNetwork = trainWithDE(population3, samples.subList(0, samples.size()/2));
+			*/
+			break;
+		case 5:
+			//run ACO
 			break;
 		}
 		System.out.println("Average Error of Final Network: " + bestNetwork.evaluate(samples.subList(samples.size()/2, samples.size())));	//print network performance summary
