@@ -13,7 +13,7 @@ public class DifferentialEvolution {
 	//create the next generation of networks
 	//@param population - list of networks representing previous population
 	//@param sampes - list of samples/dataset for the algorithm
-	public static ArrayList<Network> createNextGeneration(ArrayList<Network> population, List<Sample> samples){
+	public static ArrayList<Network> createNextGeneration(ArrayList<Network> population, List<DataPoint> samples){
 		ArrayList<Network> newGeneration = new ArrayList<Network>(population);
 		newGeneration = crossover(newGeneration, samples);								//just crossover parents - no mutation
 		return newGeneration;
@@ -22,7 +22,7 @@ public class DifferentialEvolution {
 	//crossover parents into new generation
 	//@param parents - list of networks representing the parents, or previous generation
 	//@param samples - list of samples/dataset for the algorithm
-	public static ArrayList<Network> crossover(ArrayList<Network> parents, List<Sample> samples){
+	public static ArrayList<Network> crossover(ArrayList<Network> parents, List<DataPoint> samples){
 		ArrayList<Network> offspring = new ArrayList<Network>();
 		
 		for(int num = 0; num < parents.size(); num++){									//each iteration a new parent will be selected

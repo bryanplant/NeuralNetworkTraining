@@ -256,12 +256,12 @@ public class Network implements Comparable<Network>{
 
 	//evaluates the newtwork's fitness by calculating the error
 	//@param samples - a list of samples, or the dataset
-	public double evaluate(List<Sample> samples){	
+	public double evaluate(List<DataPoint> samples){	
 		double error = 0;
-		for(Sample sample : samples){
+		for(DataPoint sample : samples){
 			calcOutputs(sample.getInputs());
 			double actualOutput = layers.get(layers.size()-1).getNeuron(0).getOutput();
-			error += Math.abs(actualOutput - sample.getOutput());
+			error += Math.abs(actualOutput - sample.getClassVal());
 		}	
 		return error/samples.size();	//return average error
 	}

@@ -5,14 +5,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-/*	Main class drives the creation and training of networks for Project 3. It reads in data files (which we manually have to specify), creates necessary network/population of networks,
- * 	and trains them using the prescribed algorithms. The user has the choice of training with backpropagation, the genetic algorithm, the mu plus lambda evolution strategy, or 
- * 	differential evolution. Each run prints the average error in order to give us a metric to compare the algorithms' performance. 
+/*	Main class drives the creation and training of networks for Project 4. It reads in data files (which we manually have to specify) and then
+ * 	gives the user an option of clustering that data using k-means, db-scan, a competitive learning neural network, PSO, or ACO
  */
 
 public class Main {
 	public static void main(String args[]) {
-		ArrayList<Sample> samples = new ArrayList<Sample>();						//create list of samples to use - dataset essentially
+		ArrayList<DataPoint> samples = new ArrayList<DataPoint>();						//create list of samples to use - dataset essentially
 		int numInputs = 0;
 		int numDataPoints = 0;
 		String filename = "tic-tac-toe.txt";
@@ -34,7 +33,8 @@ public class Main {
 				for (int i = 0; i < counter; i++) {
 					passIn[i] = inputs.get(i);											//initialize the input array
 				}
-				samples.add(new Sample(passIn, inputs.get(counter)));					//create new sample with input array, output, and add that sample to the list of samples
+				int val = inputs.get(counter).intValue();
+				samples.add(new DataPoint(passIn, val));							//create new sample with input array, output, and add that sample to the list of samples
 				numInputs = passIn.length;
 				numDataPoints ++;
 				lineScan.close();
@@ -49,7 +49,7 @@ public class Main {
 			System.out.println("File not found.");
 		}
 
-		int numHidLayers = 2;															//specify network configurations - here is where we will tune the networks
+		int numHidLayers = 2;															//specify network configurations - here is where we will tune the CNN
 		int numHidNodes = 20;
 		int numOutputs = 1;
 		int hiddenActivation = 2; 			//sigmoidal
@@ -100,13 +100,6 @@ public class Main {
 			break;
 		case 4:		
 			//run PSO
-			/*
-			ArrayList<Network> population3 = new ArrayList<Network>(); 																//initial population
-			for(int i = 0; i < popSize; i++) {
-				population3.add(new Network(numInputs, numHidLayers, numHidNodes, numOutputs, hiddenActivation, outputActivation));
-			}
-			bestNetwork = trainWithDE(population3, samples.subList(0, samples.size()/2));
-			*/
 			break;
 		case 5:
 			//run ACO
@@ -115,14 +108,34 @@ public class Main {
 		System.out.println("Average Error of Final Network: " + bestNetwork.evaluate(samples.subList(samples.size()/2, samples.size())));	//print network performance summary
 	}
 
+	
+	public static void clusterWithPSO(List<Particle> particles, List<DataPoint> points) {
+	//for each particle
+		//initialize particle
+	//for each particle
+		//calc fitness
+		//if fitness is better than best fitness value pBest in history
+			//set current val as new pBest
+	//choose particle with best fitness as gBest
+	//for each particle
+		//calc particle velocity according to equation : velocity = velocity + learningFactor1 * rand() * (pBest - currParticle) + learningFactor2 * rand() * (gBest - present)
+			//learning factors usually = 2, currParticle refers to position; pos and velocity are vectors
+		//update particle position according to equation : present = present + velocity
+	//continue till stopping condition
+	}
+	
+	
+	
+	
+	
 	//train a network with backpropagation and evaluate with 5x2 cross validation
 	//@param network - the network to train
 	//@param samples - the list of samples to train the network with
-	public static Network trainWithBackprop(Network network, List<Sample> samples) {
+	public static Network trainWithBackprop(Network network, List<DataPoint> samples) {
 		for(int j = 0; j < 20; j++){																	//this loop indicates the cross validation
 			double error = 0;
 			for(int k = j*(samples.size()/20); k < (j+1)*(samples.size()/20); k++) {
-				error += network.train(samples.get(k).getInputs(), samples.get(k).getOutput());			//training happens here and returns an error value	
+				error += network.train(samples.get(k).getInputs(), samples.get(k).getClassVal());			//training happens here and returns an error value	
 			}
 			//System.out.println("\tAverage Error: " + (error/(samples.size()/20)));
 			System.out.println((error/(samples.size()/20)));
@@ -133,7 +146,7 @@ public class Main {
 	//helper function for evolutionary algorithms to calculate the fitness of individuals in the population
 	//@param population - list of networks that serve as the population
 	//@param genNum - indicates the number of the current generation from the start
-	public static void evaluatePopulation(ArrayList<Network> population, List<Sample> samples, int genNum){
+	public static void evaluatePopulation(ArrayList<Network> population, List<DataPoint> samples, int genNum){
 		double averageFitness = 0;
 		double bestFitness = Double.MAX_VALUE;
 		for(Network network : population) {																	//iterate through population of networks
@@ -152,7 +165,7 @@ public class Main {
 	//train a population of networks with a genetic algorithm and evaluate
 	//@param population - list of networks that serve as the population for the algorithm
 	//@param samples - list of samples that function as the dataset
-	public static Network trainWithGA(ArrayList<Network> population, List<Sample> samples) {
+	public static Network trainWithGA(ArrayList<Network> population, List<DataPoint> samples) {
 		int genNum = 1;																						//initialize the generation to 1
 		int numGenerations = 500;																			//iterate through 50 generations
 		while(true){																						//a new generation is created every iteration
@@ -171,7 +184,7 @@ public class Main {
 	//@param population - a list of networks that serves as the population
 	//@param samples - a list of samples that serves as the dataset
 	//@param popSize - indicates the size of the population
-	public static Network trainWithES(ArrayList<Network> population, List<Sample> samples, int popSize){
+	public static Network trainWithES(ArrayList<Network> population, List<DataPoint> samples, int popSize){
 		int genNum = 1;																						//initialize generation number and set end number again
 		int numGenerations = 500;
 		while(true){																						//loop forever (or until return condition in this case)
@@ -193,7 +206,7 @@ public class Main {
 	//train a population of networks with differential evolution
 	//@param population - a list of networks that serves as the population
 	//@param samples - list of samples that serves as the dataset
-	public static Network trainWithDE(ArrayList<Network> population, List<Sample> samples) {
+	public static Network trainWithDE(ArrayList<Network> population, List<DataPoint> samples) {
 		int genNum = 1;																						//initialize generation number, iterate to 50 as before
 		int numGenerations = 500;
 		while(true) {																						//continue to loop until return condition

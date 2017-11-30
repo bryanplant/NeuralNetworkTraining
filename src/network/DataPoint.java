@@ -1,18 +1,17 @@
 package network;
 
-/* Represents a single data sample - that is, a single output and the inputs
- * that produced it using the corresponding dataset from UCI's repository. The 
- * length of the array corresponds to the number of inputs.
+/* Represents a single data point in the cluster, and contains a list of inputs and then 
+ * a class value.
  */
-public class Sample {
+public class DataPoint {
 	private double[] inputs;
-	private double output;
+	private int classVal;
 
 	//create a sample by passing in an array created in main from function
 	//@param inputs: the array of input data and correlated output
-	public Sample(double[] inputs, double output) {
+	public DataPoint(double[] inputs, int classVal) {
 		this.inputs = inputs;
-		this.output = output;
+		this.classVal = classVal;
 	}
 
 	//returns input at a specific index
@@ -27,7 +26,7 @@ public class Sample {
 	}
 
 	//returns output (located at array's end)
-	public double getOutput() {
-		return output;
+	public int getClassVal() {
+		return classVal;
 	}
 }
