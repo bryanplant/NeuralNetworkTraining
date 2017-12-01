@@ -7,7 +7,7 @@ import java.util.Random;
  * 	is changed a bit from Project 2, as it had to incorporate new functionality for the 3 new training algorithms.
  */
 
-public class Network implements Comparable<Network>{
+public class CNN implements Comparable<CNN>{
 	private Random random = new Random();
 	private ArrayList<Layer> layers;
 	private double learningRate;
@@ -31,7 +31,7 @@ public class Network implements Comparable<Network>{
 	 * @param numOutputs: number of output nodes
 	 * @param actFun: type of activation function for nodes
 	 */
-	public Network(int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFunHidden, int actFunOutput) {
+	public CNN(int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFunHidden, int actFunOutput) {
 		layers = new ArrayList<Layer>();
 		//create input layer with inputs number of nodes and a linear activation function
 		layers.add(new Layer(numInputs, 1));
@@ -89,7 +89,7 @@ public class Network implements Comparable<Network>{
 	//@param numOutputs - number of outputs the network has
 	//@param actFunHidden - activation function for the hidden layers
 	//@param actFunOutput - activation function for the output layer
-	public Network(ArrayList<ArrayList<Double>> genes, int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFunHidden, int actFunOutput) {
+	public CNN(ArrayList<ArrayList<Double>> genes, int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFunHidden, int actFunOutput) {
 		layers = new ArrayList<Layer>();
 		//create input layer with inputs number of nodes and a linear activation function
 		layers.add(new Layer(numInputs, 1));
@@ -133,7 +133,7 @@ public class Network implements Comparable<Network>{
 	//@param numOutputs - number of outputs the network has
 	//@param actFunHidden - activation function for the hidden layers
 	//@param actFunOutput - activation function for the output layer
-	public Network(ArrayList<ArrayList<Double>> genes, ArrayList<ArrayList<Double>> sigmas, int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFunHidden, int actFunOutput) {
+	public CNN(ArrayList<ArrayList<Double>> genes, ArrayList<ArrayList<Double>> sigmas, int numInputs, int numHidLayers, int numHidNodes, int numOutputs, int actFunHidden, int actFunOutput) {
 		layers = new ArrayList<Layer>();
 		//create input layer with inputs number of nodes and a linear activation function
 		layers.add(new Layer(numInputs, 1));
@@ -167,6 +167,12 @@ public class Network implements Comparable<Network>{
 		this.numOutputs = numOutputs;
 		this.actFunHidden = actFunHidden;
 		this.actFunOutput = actFunOutput;
+	}
+	
+
+	public ArrayList<Cluster> cluster(ArrayList<DataPoint> data) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	//Randomly reset weights in network
@@ -254,17 +260,17 @@ public class Network implements Comparable<Network>{
 		return error;	//return absolute error
 	}
 
-	//evaluates the newtwork's fitness by calculating the error
+/*	//evaluates the newtwork's fitness by calculating the error
 	//@param samples - a list of samples, or the dataset
-	public double evaluate(List<Sample> samples){	
+	public double evaluate(List<DataPoint> samples){	
 		double error = 0;
-		for(Sample sample : samples){
+		for(DataPoint sample : samples){
 			calcOutputs(sample.getInputs());
 			double actualOutput = layers.get(layers.size()-1).getNeuron(0).getOutput();
-			error += Math.abs(actualOutput - sample.getOutput());
+			error += Math.abs(actualOutput - sample.getClassVal());
 		}	
 		return error/samples.size();	//return average error
-	}
+	}*/
 
 	//prints out information about network
 	public void printNetwork(){
@@ -363,7 +369,7 @@ public class Network implements Comparable<Network>{
 
 	//compares the fitness of two networks
 	@Override
-	public int compareTo(Network o) {
+	public int compareTo(CNN o) {
 		if(this.fitness < o.fitness)
 			return 1;
 		return -1;
