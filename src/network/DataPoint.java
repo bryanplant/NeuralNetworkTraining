@@ -4,29 +4,32 @@ package network;
  * a class value.
  */
 public class DataPoint {
-	private double[] inputs;
-	private int classVal;
+	private double[] features;
+	private Cluster label;
 
 	//create a sample by passing in an array created in main from function
-	//@param inputs: the array of input data and correlated output
-	public DataPoint(double[] inputs, int classVal) {
-		this.inputs = inputs;
-		this.classVal = classVal;
+	//@param features: the array of features
+	public DataPoint(double[] features) {
+		this.features = features;
+		this.label = null;
+	}
+	
+	public void setLabel(Cluster label){
+		this.label = label;
 	}
 
-	//returns input at a specific index
+	//returns feature at a specific index
 	//@param index: the index of the array needing to be returned
-	public double getInput(int index) {
-		return inputs[index];
+	public double getFeature(int index) {
+		return features[index];
 	}
 
-	//returns all the input values in the sample
-	public double[] getInputs(){
-		return inputs;
+	//returns all the feature values in the data point
+	public double[] getFeatures(){
+		return features;
 	}
-
-	//returns output (located at array's end)
-	public int getClassVal() {
-		return classVal;
+	
+	public int getNumFeatures(){
+		return features.length;
 	}
 }
