@@ -19,7 +19,7 @@ public class Cluster {
 	}
 	
 	public Cluster(int numFeatures) {
-		double[] dataPoints = new double[9];
+		double[] dataPoints = new double[numFeatures];
 		this.center = new DataPoint(dataPoints);
 	}
 	
