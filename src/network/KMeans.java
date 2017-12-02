@@ -25,7 +25,7 @@ public class KMeans {
 		this.k = k;
 		this.clusters = new ArrayList<>();		//Create new arraylist of clusters
 		this.numFeatures = dataSet.get(0).getNumFeatures();		//get number of features in datapoint to create random centroids with the same number of features
-		for(int i = 0; i < 5; i++) {							//Initially doing 5 clusters, with random centroids
+		for(int i = 0; i < k; i++) {							//Initially doing 5 clusters, with random centroids
 			Cluster newCluster = new Cluster(numFeatures, dataSet);		//Create new cluster with random centroid
 			this.clusters.add(newCluster);							//add cluster to clusters
 		}
