@@ -19,7 +19,7 @@ public class Cluster {
 	}
 	
 	public Cluster(int numFeatures) {
-		double[] dataPoints = new double[9];
+		double[] dataPoints = new double[numFeatures];
 		this.center = new DataPoint(dataPoints);
 	}
 	
@@ -42,7 +42,7 @@ public class Cluster {
 		ArrayList<DataPoint> pointsInCluster = members;
 		for(int k = 0; k < numFeatures; k++) {
 			double mean = pointsInCluster.get(0).getFeature(k);													//Starting at 1 because 
-			for(int j = 1; j < pointsInCluster.size(); j++) {
+			for(int j = 1; j < pointsInCluster.size(); j++) {					
 				mean = (mean) * pointsInCluster.get(j).getFeature(k);			//Geometric mean
 			}
 			mean = Math.pow(mean, 1.0 / pointsInCluster.size());							//takes the numFeatures root of the mean

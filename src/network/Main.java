@@ -14,7 +14,7 @@ public class Main {
 		ArrayList<DataPoint> data = new ArrayList<DataPoint>();						//create list of samples to use - dataset essentially
 		int numInputs = 0;
 		int numDataPoints = 0;
-		String filename = "haberman.data";
+		String filename = "wine.data";
 		try {
 			Scanner s = new Scanner(new File(filename));							//create a new scanner, checks lines of data in file
 			while (s.hasNextLine()) {												//loop while there is another line
@@ -70,7 +70,7 @@ public class Main {
 		System.out.println("\t5)Ant Colony Optimization (ACO)");
 
 		int selection = in.nextInt();
-		in.close();
+		//in.close();
 
 		Collections.shuffle(data);													//randomize the data
 
@@ -78,7 +78,8 @@ public class Main {
 		ArrayList<Cluster> clusteredData;
 		switch(selection){
 		case 1:	
-			int k = 5;
+			System.out.println("How many centroids?");
+			int k = in.nextInt();
 			KMeans kmeans = new KMeans(data, k);
 			clusteredData = kmeans.cluster(data);
 			break;
