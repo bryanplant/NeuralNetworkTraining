@@ -5,21 +5,24 @@ import java.util.ArrayList;
 public class PSO {
 	private int particleNum = 20;					//use 20 particles
 	private ArrayList<Particle> particles = new ArrayList<Particle>();
-	
+	private Particle gBest;
+
 	public ArrayList<Cluster> cluster(ArrayList<DataPoint> data) {
+		for (int i = 0; i < particleNum; i++) {								//for each particle
+			particles.add(new Particle());									//initialize a new particle
+		}
+		for (int t = 0; t < 500; t++) {										//run PSO for 500 iterations
 			for (int i = 0; i < particleNum; i++) {								//for each particle
-				particles.add(new Particle());									//initialize a new particle
+				double fitness = particles.get(i).calcFitness();				//calculate the fitness and update pBest if applicable
+				if (fitness > gBest.getFitness()) {
+					gBest = particles.get(i);									//choose particle with best fitness as gBest
+				}
 			}
-			//for each particle
-				//calc fitness
-				//if fitness is better than best fitness value pBest in history
-					//set current val as new pBest
-			//choose particle with best fitness as gBest
-			//for each particle
-				//calc particle velocity according to equation : velocity = velocity + learningFactor1 * rand() * (pBest - currParticle) + learningFactor2 * rand() * (gBest - present)
-					//learning factors usually = 2, currParticle refers to position; pos and velocity are vectors
-				//update particle position according to equation : present = present + velocity
-			//continue till stopping condition
+			for (int i = 0; i < particleNum; i++) {								//for each particle
+				particles.get(i).setGBest(gBest.getFitness());					//update the gBest of every particle
+				particles.get(i).update();
+			}
+		}
 		return null;
 	}
 }
