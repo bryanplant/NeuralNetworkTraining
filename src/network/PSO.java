@@ -12,6 +12,7 @@ public class PSO {
 			particles.add(new Particle(data));									//initialize a new particle
 		}
 		ArrayList<Cluster> clusters = new ArrayList<Cluster>();
+		gBest = particles.get(0);												//just set gBest to be first particle here; it will work itself out
 		for (int t = 0; t < 500; t++) {											//run PSO for 500 iterations
 			for (int i = 0; i < particleNum; i++) {								//for each particle
 				double fitness = particles.get(i).calcFitness();				//calculate the fitness and update pBest if applicable

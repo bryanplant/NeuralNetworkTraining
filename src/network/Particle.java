@@ -50,7 +50,7 @@ public class Particle {
 		double total = 0;
 		double ave = 0;
 		for (int i = 0; i < thisCluster.getMembers().size(); i++) {
-			for (int j = 0; i < thisCluster.getMembers().size(); j++) {
+			for (int j = 0; j < thisCluster.getMembers().size(); j++) {
 				total += thisCluster.getMembers().get(i).calcDistance(thisCluster.getMembers().get(j));				//calc distance to each point
 				counter++;	
 			}
