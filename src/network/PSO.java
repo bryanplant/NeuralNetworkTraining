@@ -3,15 +3,16 @@ package network;
 import java.util.ArrayList;
 
 public class PSO {
-	private int particleNum = 20;					//use 20 particles
+	private int particleNum = 20;												//use 20 particles
 	private ArrayList<Particle> particles = new ArrayList<Particle>();
 	private Particle gBest;
 
 	public ArrayList<Cluster> cluster(ArrayList<DataPoint> data) {
-		for (int i = 0; i < particleNum; i++) {								//for each particle
-			particles.add(new Particle());									//initialize a new particle
+		for (int i = 0; i < particleNum; i++) {									//for each particle
+			particles.add(new Particle(data));									//initialize a new particle
 		}
-		for (int t = 0; t < 500; t++) {										//run PSO for 500 iterations
+		ArrayList<Cluster> clusters = new ArrayList<Cluster>();
+		for (int t = 0; t < 500; t++) {											//run PSO for 500 iterations
 			for (int i = 0; i < particleNum; i++) {								//for each particle
 				double fitness = particles.get(i).calcFitness();				//calculate the fitness and update pBest if applicable
 				if (fitness > gBest.getFitness()) {
@@ -20,9 +21,12 @@ public class PSO {
 			}
 			for (int i = 0; i < particleNum; i++) {								//for each particle
 				particles.get(i).setGBest(gBest.getFitness());					//update the gBest of every particle
-				particles.get(i).update();
+				Cluster c = particles.get(i).update(data);						//then update the velocity and cluster of each particle
+				if (i == particleNum - 1) {
+					clusters.add(c);											//add the last cluster of each particle to the list - the "best" clusters
+				}
 			}
 		}
-		return null;
+		return clusters;														//return the "optimal" list of clusters
 	}
 }
